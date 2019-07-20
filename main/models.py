@@ -64,6 +64,8 @@ class User(AbstractUser):
     passport_id = models.CharField('Номер паспорта', max_length=10, blank=True)
     passport_issued_by = models.CharField('Кем и когда выдан', max_length=200, blank=True)
     mc_manager = models.ForeignKey(ManagementCompany, related_name='managers', verbose_name='Управляемая УК', blank=True, null=True, on_delete=models.SET_NULL)
+    phone = models.CharField('Телефон', max_length=20, blank=True)
+    email = models.EmailField('Email', max_length=200, blank=True)
 
 
 class Status(models.Model):
@@ -123,3 +125,13 @@ class VoteComment(models.Model):
     date = models.DateTimeField("Время создания", auto_now=True)
     user = models.ForeignKey(User, related_name='vote_comments', verbose_name='Пользователь', on_delete=models.CASCADE)
     vote = models.ForeignKey(Vote, related_name='comments', verbose_name='Голосование', on_delete=models.CASCADE)
+
+
+class ActiveWork(models.Model):
+    description = models.TextField('Описание')
+    start_date = models.DateTimeField('Время начала')
+    end_date = models.DateTimeField('Время окончания')
+    management_company = models.ForeignKey(ManagementCompany, related_name='active_works', verbose_name='УК', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.description

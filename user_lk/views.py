@@ -2,12 +2,14 @@ import logging
 
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 from django.http import HttpRequest, Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import AuthenticationForm
+from django.utils.datetime_safe import datetime
 
-from main.models import Status, Application, Vote
-from user_lk.forms import ApplicationForm, ApplicationCommentForm, VoteForm, VoteCommentForm
+from main.models import Status, Application, Vote, ActiveWork
+from user_lk.forms import ApplicationForm, ApplicationCommentForm, VoteForm, VoteCommentForm, UserForm
 
 
 @login_required
@@ -110,3 +112,22 @@ def vote_page(request, pk):
 def vote_list(request):
     votes = Vote.objects.filter(user__flat__house__territory__management_company=request.user.flat.house.territory.management_company)
     return render(request, 'vote/vote_list.html', {'votes': votes})
+
+
+@login_required
+def active_works_list(request):
+    active_works = ActiveWork.objects.filter(end_date__gt=datetime.now())
+    return render(request, 'active_works.html', {'active_works': active_works})
+
+
+@login_required
+def user_edit(request):
+    if request.method == 'POST':
+        form = UserForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect(''.join([request.path, '#success']))
+    else:
+        form = UserForm(instance=request.user)
+
+    return render(request, 'user_edit.html', {'form': form})

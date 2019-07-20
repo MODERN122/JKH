@@ -1,6 +1,6 @@
 from django import forms
 
-from main.models import Application, ApplicationComment, Vote, VoteComment
+from main.models import Application, ApplicationComment, Vote, VoteComment, User
 
 
 class ApplicationForm(forms.ModelForm):
@@ -40,4 +40,13 @@ class VoteCommentForm(forms.ModelForm):
         model = VoteComment
         fields = [
             'context'
+        ]
+
+
+class UserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = [
+            'email',
+            'phone',
         ]
