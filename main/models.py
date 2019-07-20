@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.urls import reverse
 
 
 class ManagementCompany(models.Model):
@@ -78,13 +79,13 @@ class Application(models.Model):
     status = models.ForeignKey(Status, related_name='applications', verbose_name='Статус', on_delete=models.CASCADE)  # TODO: Продумать удаление
     date = models.DateTimeField('Время создания', auto_now=True)
     user = models.ForeignKey(User, related_name='applications', on_delete=models.CASCADE, verbose_name='Квартирант')
-    management_company = models.ForeignKey(ManagementCompany, related_name='applications', on_delete=models.SET_NULL, blank=True, null=True)
+    territory = models.ForeignKey(Territory, related_name='applications', on_delete=models.SET_NULL, blank=True, null=True)
     image1 = models.ImageField(upload_to='applications', blank=True)
     image2 = models.ImageField(upload_to='applications', blank=True)
     image3 = models.ImageField(upload_to='applications', blank=True)
 
     def get_absolute_url(self):
-        return '/'
+        return reverse('application_page', kwargs={'pk': self.pk})
 
     def __str__(self):
         return self.body
@@ -94,3 +95,31 @@ class ApplicationComment(models.Model):
     application = models.ForeignKey(Application, related_name='comments', verbose_name='Заявка', on_delete=models.CASCADE)
     context = models.TextField('Комментарий')
     date = models.DateTimeField('Время создания', auto_now=True)
+    user = models.ForeignKey(User, related_name='application_comments', verbose_name='Пользователь', on_delete=models.CASCADE)
+
+
+class Vote(models.Model):
+    title = models.CharField('Название', max_length=200)
+    context = models.TextField('Вопрос на голосование')
+    image1 = models.ImageField(upload_to='Votes', blank=True)
+    image2 = models.ImageField(upload_to='Votes', blank=True)
+    image3 = models.ImageField(upload_to='Votes', blank=True)
+    user = models.ForeignKey(User, related_name='Votes', verbose_name='Пользователь', on_delete=models.SET_NULL, blank=True, null=True)
+    date = models.DateTimeField('Время создания', auto_now=True)
+    duration = models.DurationField()
+    agree = models.ManyToManyField(User, related_name='agree_votes', verbose_name='Согласные пользователи')
+    disagree = models.ManyToManyField(User, related_name='disagree_votes', verbose_name='Несогласные пользователи')
+    # management_company = models.ForeignKey(ManagementCompany, related_name='Votes', verbose_name='УК', on_delete=models.SET_NULL, blank=True, null=True)
+
+    def __str__(self):
+        return self.title
+
+    def get_absolute_url(self):
+        return reverse('vote_page', kwargs={'pk': self.pk})
+
+
+class VoteComment(models.Model):
+    context = models.TextField('Комментарий')
+    date = models.DateTimeField("Время создания", auto_now=True)
+    user = models.ForeignKey(User, related_name='vote_comments', verbose_name='Пользователь', on_delete=models.CASCADE)
+    vote = models.ForeignKey(Vote, related_name='comments', verbose_name='Голосование', on_delete=models.CASCADE)

@@ -8,9 +8,8 @@
     <title>Document</title>
 </head>
 <body>
-    <form method="post" enctype="multipart/form-data">{% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit">
-    </form>
+    {% for vote in votes %}
+        <a href="{{ vote.get_absolute_url }}">{{ vote.title }}</a> <br>
+{% endfor %}
 </body>
 </html>

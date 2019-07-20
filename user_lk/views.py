@@ -1,11 +1,13 @@
+import logging
+
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest, Http404
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import AuthenticationForm
 
-from main.models import Status, Application
-from user_lk.forms import ApplicationForm
+from main.models import Status, Application, Vote
+from user_lk.forms import ApplicationForm, ApplicationCommentForm, VoteForm, VoteCommentForm
 
 
 @login_required
@@ -27,7 +29,7 @@ def create_application(request):
         if form.is_valid():
             instance = form.save(commit=False)
             instance.user = request.user
-            instance.management_company = request.user.flat.house.territory.management_company
+            instance.territory = request.user.flat.house.territory
             instance.status = Status.objects.get_or_create(name='принято')[0]
             instance.save()
 
@@ -43,4 +45,68 @@ def application_page(request, pk):
         application = Application.objects.get(pk=pk)
     except Application.DoesNotExist:
         raise Http404
-    return render(request, 'applications/page.html', {'application': application})
+
+    if request.method == 'POST':
+        form = ApplicationCommentForm(request.POST)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.application = application
+            instance.save()
+            return redirect(request.path)
+    else:
+        form = ApplicationCommentForm()
+
+    return render(request, 'applications/page.html', {'application': application, 'comment_form': form})
+
+
+@login_required()
+def create_vote(request):
+    if request.method == 'POST':
+        form = VoteForm(request.POST, request.FILES)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.user = request.user
+            instance.save()
+            return redirect(instance)
+    else:
+        form = VoteForm()
+
+    return render(request, 'vote/create.html', {'form': form})
+
+
+def vote_page(request, pk):
+    vote = get_object_or_404(Vote, pk=pk)
+    form = VoteCommentForm()
+    if request.method == 'POST' and request.POST.get('context'):
+        form = VoteCommentForm(request.POST)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.user = request.user
+            instance.vote = vote
+            instance.save()
+            return redirect(request.path)
+    elif request.method == 'POST':
+        if request.POST.get('vote') == 'agree':
+            vote.agree.add(request.user)
+            vote.disagree.remove(request.user)
+        if request.POST.get('vote') == 'disagree':
+            vote.disagree.add(request.user)
+            vote.agree.remove(request.user)
+        return redirect(request.path)
+
+    if vote.agree.filter(pk=request.user.pk).exists():
+        user_vote = 'agree'
+    elif vote.disagree.filter(pk=request.user.pk).exists():
+        user_vote = 'disagree'
+    else:
+        user_vote = ''
+
+    print(user_vote)
+
+    return render(request, 'vote/page.html', {'vote': vote, 'comment_form': form, 'user_vote': user_vote})
+
+
+@login_required
+def vote_list(request):
+    votes = Vote.objects.filter(user__flat__house__territory__management_company=request.user.flat.house.territory.management_company)
+    return render(request, 'vote/vote_list.html', {'votes': votes})

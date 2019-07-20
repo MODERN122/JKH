@@ -10,6 +10,15 @@
 <body>
 {{ application.body }}<br>
 {{ application.date }}<br>
+<img src="{{ application.image1.url }}" width="400"><br>
 {{ application.status.name }}<br>
+<br>
+{% for comment in application.comments.all %}
+    {{ comment.context }} / {{ comment.application.user.fullname }} / {{ comment.date }}<br>
+{% endfor %}
+<form method="post">{% csrf_token %}
+    {{ comment_form.as_p }}
+    <input type="submit">
+</form>
 </body>
 </html>
