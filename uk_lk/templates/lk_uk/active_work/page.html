@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block contend %}
+    {% include 'link_bar.html' %}
+    {{ work.description }}<br>
+    {{ work.start_date }}<br>
+    {{ work.end_date }}<br>
+    <form method="post">{% csrf_token %}
+        <button name="complete" value="on">Завершить</button>
+    </form>
+{% endblock %}

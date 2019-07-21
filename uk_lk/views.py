@@ -1,11 +1,12 @@
 from django.contrib.auth.decorators import login_required
+from django.forms import modelform_factory
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils.datetime_safe import datetime
 
-from main.models import User, Application, Territory, Status, ActiveWork, Vote
-from uk_lk.forms import UserForm, ActiveWorkForm
+from main.models import User, Application, Territory, Status, ActiveWork, Vote, House, Flat
+from uk_lk.forms import UserForm, ActiveWorkForm, ManagementCompanyForm
 from uk_lk.utils import moderator_required
-from user_lk.forms import ApplicationCommentForm
+from user_lk.forms import ApplicationCommentForm, VoteCommentForm
 
 
 @moderator_required
@@ -115,8 +116,130 @@ def active_work(request, pk):
 @login_required
 def vote_list(request):
     votes = Vote.objects.filter(user__flat__house__territory__management_company=request.user.mc_manager)
-    my_finished_votes = request.user.votes.filter(end_date__lte=datetime.now())
     moderate_list = votes.filter(is_moderated=False)
     votes = votes.filter(is_moderated=True, end_date__gt=datetime.now())
 
-    return render(request, 'vote/vote_list.html', {'votes': votes, 'my_finished_votes': my_finished_votes, 'moderate_list': moderate_list})
+    return render(request, 'lk_uk/vote/vote_list.html', {'votes': votes, 'moderate_list': moderate_list})
+
+
+@moderator_required
+@login_required
+def vote_page(request, pk):
+    vote = get_object_or_404(Vote, pk=pk)
+    form = VoteCommentForm()
+    if request.method == 'POST' and request.POST.get('context'):
+        form = VoteCommentForm(request.POST)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.user = request.user
+            instance.vote = vote
+            instance.save()
+            return redirect(request.path)
+    elif request.method == 'POST':
+        if request.POST.get('vote') == 'agree':
+            vote.agree.add(request.user)
+            vote.disagree.remove(request.user)
+        if request.POST.get('vote') == 'disagree':
+            vote.disagree.add(request.user)
+            vote.agree.remove(request.user)
+        if request.POST.get('action') == 'remove':
+            vote.delete()
+            return redirect('votes')
+        if request.POST.get('action') == 'publish':
+            vote.is_moderated = True
+            vote.save()
+            return redirect(request.path)
+        return redirect(request.path)
+
+    if vote.agree.filter(pk=request.user.pk).exists():
+        user_vote = 'agree'
+    elif vote.disagree.filter(pk=request.user.pk).exists():
+        user_vote = 'disagree'
+    else:
+        user_vote = ''
+
+    print(user_vote)
+
+    return render(request, 'lk_uk/vote/page.html', {'vote': vote, 'comment_form': form, 'user_vote': user_vote})
+
+
+@moderator_required
+@login_required
+def finished_votes(request):
+    votes = Vote.objects.filter(user__flat__house__territory__management_company=request.user.flat.house.territory.management_company)
+    votes = votes.filter(is_moderated=True, end_date__lte=datetime.now())
+
+    return render(request, 'lk_uk/vote/finished_votes.html', {'votes': votes})
+
+
+@moderator_required
+@login_required
+def active_works(request):
+    works = ActiveWork.objects.filter(management_company=request.user.mc_manager, end_date__gt=datetime.now()   )
+    return render(request, 'lk_uk/active_work/list.html', {'works': works})
+
+
+@moderator_required
+@login_required
+def info_page(request):
+    if request.method == 'POST':
+        form = ManagementCompanyForm(request.POST, instance=request.user.mc_manager)
+        if form.is_valid():
+            form.save()
+            return redirect(request.path)
+    else:
+        form = ManagementCompanyForm(instance=request.user.mc_manager)
+    return render(request, 'lk_uk/info_page.html', {'form': form})
+
+
+@moderator_required
+@login_required
+def territories_page(request):
+    queryset = request.user.mc_manager.territories.all()
+    Form = modelform_factory(Territory, fields=("name", "housing_department"))
+    if request.method == 'POST':
+        form = Form(request.POST)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.management_company = request.user.mc_manager
+            instance.save()
+            return redirect(instance)
+    else:
+        form = Form()
+    return render(request, 'lk_uk/list_and_form.html', {'form': form, 'objs': queryset, 'parent': request.user.mc_manager})
+
+
+@moderator_required
+@login_required
+def houses_page(request, pk):
+    parent = get_object_or_404(Territory, pk=pk)
+    queryset = parent.houses.all()
+    Form = modelform_factory(House, fields=("number", "street"))
+    if request.method == 'POST':
+        form = Form(request.POST)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.territory = parent
+            instance.save()
+            return redirect(instance)
+    else:
+        form = Form()
+    return render(request, 'lk_uk/list_and_form.html', {'form': form, 'objs': queryset, 'parent': parent})
+
+
+@moderator_required
+@login_required
+def flats_page(request, pk):
+    parent = get_object_or_404(House, pk=pk)
+    queryset = parent.flats.all()
+    Form = modelform_factory(Flat, fields=("number", "entrance", "floor"))
+    if request.method == 'POST':
+        form = Form(request.POST)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.house = parent
+            instance.save()
+            return redirect(instance)
+    else:
+        form = Form()
+    return render(request, 'lk_uk/list_and_form.html', {'form': form, 'objs': queryset, 'parent': parent})

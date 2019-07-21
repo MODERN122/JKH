@@ -1,3 +1,6 @@
+{% if user.mc_manager %}
+    {% include 'lk_uk/link_bar.html' %}
+{% else %}
 <table>
     <tr>
         <td {% if page == 'info_page' %}style="background-color: lightblue;"{% endif %}><a href="{% url 'info_page' %}">Управляющая компания</a></td>
@@ -7,3 +10,4 @@
     </tr>
 </table>
 <hr>
+{% endif %}

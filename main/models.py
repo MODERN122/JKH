@@ -31,6 +31,10 @@ class Territory(models.Model):
     def __str__(self):
         return self.name if self.name else str(self.pk)
 
+    def get_absolute_url(self):
+        return reverse('houses', kwargs={'pk': self.pk})
+
+
 
 class Street(models.Model):
     name = models.CharField('Название улицы', max_length=100)
@@ -47,6 +51,9 @@ class House(models.Model):
     def __str__(self):
         return f'ул. {self.street.name}, д. {self.number}'
 
+    def get_absolute_url(self):
+        return reverse('flats', kwargs={'pk': self.pk})
+
 
 class Flat(models.Model):
     house = models.ForeignKey(House, related_name='flats', verbose_name='Дом', on_delete=models.CASCADE)
@@ -56,6 +63,9 @@ class Flat(models.Model):
 
     def __str__(self):
         return f'{str(self.house)}, кв. {self.number}'
+
+    def get_absolute_url(self):
+        return '#'
 
 
 class User(AbstractUser):

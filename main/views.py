@@ -10,7 +10,7 @@ def login_page(request):
             user = form.get_user()
             login(request, user)
             if user.mc_manager:
-                return redirect('uk_lk')
+                return redirect('applications')
             else:
                 return redirect('applications_list')
     else:

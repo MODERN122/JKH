@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block contend %}
+    {% include 'lk_uk/link_bar.html' %}
+    {{ application.body }}<br>
+    {{ application.date }}<br>
+    <img src="{% if application.image1 %}{{ application.image1.url }}{% endif %}" width="400"><br>
+    <form method="post">{% csrf_token %}
+        {% for status in status_list %}
+            <button name="status" value="{{ status.name }}"
+                    {% if status.name == application.status.name %}disabled{% endif %}>{{ status }}</button>
+        {% endfor %}
+    </form>
+    {{ application.status.name }}<br>
+    <br>
+    <form method="post">{% csrf_token %}
+        {{ comment_form.as_p }}
+        <input type="submit">
+    </form>
+    <h3>Комментарии:</h3>
+    {% for comment in application.comments.all %}
+        <div {% if comment.user.mc_manager %}style="background-color: lightblue;"{% endif %}>{{ comment.context|linebreaks }}</div>
+        <br>
+        {{ comment.user.fullname }} / {{ comment.date }}<br>
+        <hr>
+    {% endfor %}
+{% endblock %}
