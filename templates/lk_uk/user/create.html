@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+<form method="post">{% csrf_token %}
+{#    <p>#}
+{#        <label for="id_username">Имя пользователя:</label>#}
+{#        <input type="text" name="username" maxlength="150" required id="id_username">#}
+{#    </p>#}
+{#    <p>#}
+{#        <label for="id_temp_password">Временный пароль:</label>#}
+{#        <input type="text" name="temp_password" maxlength="128" id="id_temp_password">#}
+{#    </p>#}
+{#    <p>#}
+{#        <label for="id_fullname">ФИО:</label>#}
+{#        <input type="text" name="fullname" maxlength="200" required id="id_fullname">#}
+{#    </p>#}
+{#    <p>#}
+{#        <label for="id_flat">Квартира:</label>#}
+{#        <select name="flat" id="id_flat">#}
+{#            <option value="">---------</option>#}
+{##}
+{#            <option value="1">ул. Победы, д. 44, кв. 12</option>#}
+{##}
+{#            <option value="2">ул. Победы, д. 44, кв. 13</option>#}
+{##}
+{#        </select>#}
+{#    </p>#}
+{#    <p>#}
+{#        <label for="id_passport_id">Номер паспорта:</label>#}
+{#        <input type="text" name="passport_id" maxlength="10" id="id_passport_id">#}
+{#    </p>#}
+{#    <p>#}
+{#        <label for="id_passport_issued_by">Кем и когда выдан:</label>#}
+{#        <input type="text" name="passport_issued_by" maxlength="200" id="id_passport_issued_by">#}
+{#    </p>#}
+{#    <p>#}
+{#        <label for="id_phone">Телефон:</label>#}
+{#        <input type="text" name="phone" maxlength="20" id="id_phone">#}
+{#    </p>#}
+{#    <p>#}
+{#        <label for="id_email">Адрес электронной почты:</label>#}
+{#        <input type="email" name="email" maxlength="254" id="id_email">#}
+{#    </p>#}
+    {{ form.as_p }}
+    <input type="submit">
+</form>
+</body>
+
+</html>

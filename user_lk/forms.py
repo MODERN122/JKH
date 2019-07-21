@@ -31,7 +31,7 @@ class VoteForm(forms.ModelForm):
             'image1',
             'image2',
             'image3',
-            'duration',
+            'end_date',
         ]
 
 

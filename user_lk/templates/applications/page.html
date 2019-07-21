@@ -1,24 +1,21 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-</head>
-<body>
-{{ application.body }}<br>
-{{ application.date }}<br>
-<img src="{{ application.image1.url }}" width="400"><br>
-{{ application.status.name }}<br>
-<br>
-{% for comment in application.comments.all %}
-    {{ comment.context }} / {{ comment.application.user.fullname }} / {{ comment.date }}<br>
-{% endfor %}
-<form method="post">{% csrf_token %}
-    {{ comment_form.as_p }}
-    <input type="submit">
-</form>
-</body>
-</html>
+{% extends 'base.html' %}
+{% block contend %}
+    {% include 'link_bar.html' %}
+    {{ application.body }}<br>
+    {{ application.date }}<br>
+    <img src="{% if application.image1 %}{{ application.image1.url }}{% endif %}" width="400"><br>
+    {{ application.status.name }}<br>
+    <br>
+    <hr>
+    <form method="post">{% csrf_token %}
+        {{ comment_form.as_p }}
+        <input type="submit">
+    </form>
+    <hr>
+    <h3>Комментарии:</h3>
+    {% for comment in application.comments.all %}
+        <div {% if comment.user.mc_manager %}style="background-color: lightblue;"{% endif %}>{{ comment.context|linebreaks }}</div><br>
+        {{ comment.user.fullname }} / {{ comment.date }}<br><hr>
+    {% endfor %}
+
+{% endblock %}

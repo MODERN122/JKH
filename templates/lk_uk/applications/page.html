@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+{{ application.body }}<br>
+{{ application.date }}<br>
+<img src="{% if application.image1 %}{{ application.image1.url }}{% endif %}" width="400"><br>
+<form method="post">{% csrf_token %}
+        {% for status in status_list %}
+            <button name="status" value="{{ status.name }}" {% if status.name == application.status.name %}disabled{% endif %}>{{ status }}</button>
+        {% endfor %}
+</form>
+{{ application.status.name }}<br>
+<br>
+{% for comment in application.comments.all %}
+    {{ comment.context|linebreaks }} / {{ comment.application.user.fullname }} / {{ comment.date }}<br>
+{% endfor %}
+<form method="post">{% csrf_token %}
+    {{ comment_form.as_p }}
+    <input type="submit">
+</form>
+</body>
+</html>

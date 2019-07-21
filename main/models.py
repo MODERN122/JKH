@@ -65,7 +65,11 @@ class User(AbstractUser):
     passport_issued_by = models.CharField('Кем и когда выдан', max_length=200, blank=True)
     mc_manager = models.ForeignKey(ManagementCompany, related_name='managers', verbose_name='Управляемая УК', blank=True, null=True, on_delete=models.SET_NULL)
     phone = models.CharField('Телефон', max_length=20, blank=True)
-    email = models.EmailField('Email', max_length=200, blank=True)
+    create_date = models.DateTimeField('Время создания', auto_now_add=True)
+    temp_password = models.CharField('Временный пароль', max_length=128, blank=True)
+
+    def get_absolute_url(self):
+        return reverse('edit_user', kwargs={'pk': self.pk})
 
 
 class Status(models.Model):
@@ -106,11 +110,12 @@ class Vote(models.Model):
     image1 = models.ImageField(upload_to='Votes', blank=True)
     image2 = models.ImageField(upload_to='Votes', blank=True)
     image3 = models.ImageField(upload_to='Votes', blank=True)
-    user = models.ForeignKey(User, related_name='Votes', verbose_name='Пользователь', on_delete=models.SET_NULL, blank=True, null=True)
+    user = models.ForeignKey(User, related_name='votes', verbose_name='Пользователь', on_delete=models.SET_NULL, blank=True, null=True)
     date = models.DateTimeField('Время создания', auto_now=True)
-    duration = models.DurationField()
+    end_date = models.DateTimeField('Время окончания сбора голосов')
     agree = models.ManyToManyField(User, related_name='agree_votes', verbose_name='Согласные пользователи')
     disagree = models.ManyToManyField(User, related_name='disagree_votes', verbose_name='Несогласные пользователи')
+    is_moderated = models.BooleanField('Отмодерировано', default=False)
     # management_company = models.ForeignKey(ManagementCompany, related_name='Votes', verbose_name='УК', on_delete=models.SET_NULL, blank=True, null=True)
 
     def __str__(self):
@@ -135,3 +140,7 @@ class ActiveWork(models.Model):
 
     def __str__(self):
         return self.description
+
+    def get_absolute_url(self):
+        return reverse('active_work', kwargs={'pk': self.pk})
+

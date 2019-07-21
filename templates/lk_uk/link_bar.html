@@ -1,0 +1,9 @@
+<table>
+    <tr>
+        <td {% if page == 'info_page' %}style="background-color: lightblue;"{% endif %}><a href="{% url 'info_page' %}">Управляющая компания</a></td>
+        <td {% if page == 'applications' %}style="background-color: lightblue;"{% endif %}><a href="{% url 'applications' %}">Заявки</a></td>
+        <td {% if page == 'vote_list' %}style="background-color: lightblue;"{% endif %}><a href="{% url 'active_votes' %}">Голосования</a></td>
+        <td {% if page == 'active_works' %}style="background-color: lightblue;"{% endif %}><a href="{% url 'active_works' %}">Текущие работы</a></td>
+    </tr>
+</table>
+<hr>

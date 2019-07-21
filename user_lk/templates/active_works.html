@@ -1,15 +1,10 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-</head>
-<body>
+{% extends 'base.html' %}
+{% block contend %}
+{% include 'link_bar.html' with page='active_works' %}
 {% for active_work in active_works %}
-    {{ active_work.discription }}
+    {{ active_work.description|linebreaks }}
+    c {{ active_work.start_date }} <br>
+    по {{ active_work.end_date }}
+    <hr>
 {% endfor %}
-</body>
-</html>
+{% endblock %}

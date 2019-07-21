@@ -1,4 +1,4 @@
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import render, redirect
 
@@ -12,8 +12,13 @@ def login_page(request):
             if user.mc_manager:
                 return redirect('uk_lk')
             else:
-                return redirect('user_lk')
+                return redirect('applications_list')
     else:
         form = AuthenticationForm()
 
     return render(request, 'login.html', {'form': form})
+
+
+def logout_page(request):
+    logout(request)
+    return redirect('main')

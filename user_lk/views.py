@@ -15,7 +15,7 @@ from user_lk.forms import ApplicationForm, ApplicationCommentForm, VoteForm, Vot
 @login_required
 def info_page(request):
     uk = request.user.flat.house.territory.management_company
-    return HttpRequest(f'{uk.company_name}\n{uk.email}')
+    return render(request, 'uk_info.html', {'uk': uk})
 
 
 @login_required
@@ -42,7 +42,10 @@ def create_application(request):
     return render(request, 'applications/create.html', {'form': form})
 
 
+@login_required
 def application_page(request, pk):
+    if request.user.mc_manager:
+        return redirect('application', pk=pk)
     try:
         application = Application.objects.get(pk=pk)
     except Application.DoesNotExist:
@@ -53,6 +56,7 @@ def application_page(request, pk):
         if form.is_valid():
             instance = form.save(commit=False)
             instance.application = application
+            instance.user = request.user
             instance.save()
             return redirect(request.path)
     else:
@@ -110,8 +114,23 @@ def vote_page(request, pk):
 
 @login_required
 def vote_list(request):
+    if request.user.mc_manager:
+        return redirect('votes')
     votes = Vote.objects.filter(user__flat__house__territory__management_company=request.user.flat.house.territory.management_company)
+    votes = votes.filter(is_moderated=True, end_date__gt=datetime.now())
+
     return render(request, 'vote/vote_list.html', {'votes': votes})
+
+
+@login_required
+def finished_votes(request):
+    if request.user.mc_manager:
+        return redirect('votes')
+    votes = Vote.objects.filter(user__flat__house__territory__management_company=request.user.flat.house.territory.management_company)
+    votes = votes.filter(is_moderated=True, end_date__lte=datetime.now())
+
+    return render(request, 'vote/finished_votes.html', {'votes': votes})
+
 
 
 @login_required

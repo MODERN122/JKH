@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block contend %}
+{% include 'link_bar.html' with page='info_page' %}
+    {{ uk.company_name }}<br>
+    {{ uk.subject_rf }}, {{ uk.actual_address }}<br>
+    {{ uk.name_employee }}<br>
+    {{ uk.phone }}<br>
+    {{ uk.email }}<br>
+    {{ uk.site }}<br>
+{% endblock %}

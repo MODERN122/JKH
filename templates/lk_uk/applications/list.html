@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+{% block contend %}
+    {% include 'lk_uk/link_bar.html' %}
+    {% for application in applications %}
+        <a href="{{ application.get_absolute_url }}">{{ application.body|slice:'0:60' }}</a> <br>
+    {% endfor %}
+{% endblock %}

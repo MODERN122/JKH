@@ -10,6 +10,8 @@ admin.site.register(Flat)
 admin.site.register(User)
 admin.site.register(Application)
 admin.site.register(Status)
+admin.site.register(ActiveWork)
+admin.site.register(Vote)
 
 
 

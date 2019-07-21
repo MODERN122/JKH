@@ -127,3 +127,12 @@ LOGIN_URL = '/login/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+
+DATE_INPUT_FORMATS = [
+    '%d.%m.%Y',
+]
+
+DATETIME_INPUT_FORMATS = [
+    '%d.%m.%Y',
+    '%d.%m.%Y %H:%M',
+]
