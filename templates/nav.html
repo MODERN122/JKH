@@ -6,14 +6,14 @@
             <span class="sr-only">(current)</span>
         </a>
     </li>
-    <li class="nav-item">
-        <a class="nav-link {% if page == 'applications' %}active{% endif %}" href="{% url 'applications_list' %}">Заявки</a>
+    <li class="nav-item {% if page == 'applications' %}active{% endif %}">
+        <a class="nav-link" href="{% url 'applications_list' %}">Заявки</a>
     </li>
-    <li class="nav-item">
-        <a class="nav-link {% if page == 'votes' %}active{% endif %}" href="{% url 'active_votes' %}">Голосования</a>
+    <li class="nav-item  {% if page == 'votes' %}active{% endif %}">
+        <a class="nav-link" href="{% url 'active_votes' %}">Голосования</a>
     </li>
-    <li class="nav-item">
-        <a class="nav-link {% if page == 'active_works' %}active{% endif %}" href="{% url 'active_works' %}">Текущие работы</a>
+    <li class="nav-item {% if page == 'active_works' %}active{% endif %}">
+        <a class="nav-link" href="{% url 'active_works' %}">Текущие работы</a>
     </li>
 {#    <li class="nav-item dropdown">#}
 {#        <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink-333" data-toggle="dropdown"#}

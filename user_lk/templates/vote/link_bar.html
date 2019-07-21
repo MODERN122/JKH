@@ -1,8 +1,39 @@
-<table>
-    <tr>
-        <td {% if page == 'active_votes' %}style="background-color: lightblue;"{% endif %}><a href="{% url 'active_votes' %}">Активные голосования</a></td>
-        <td {% if page == 'finished_votes' %}style="background-color: lightblue;"{% endif %}><a href="{% url 'finished_votes' %}">Завершенные голосования</a></td>
-        <td><a href="{% url 'create_vote' %}"><button>Начать голосование</button></a> </td>
-    </tr>
-</table>
-<hr>
+
+<nav class="navbar navbar-expand-lg navbar-dark primary-color">
+
+    <!-- Collapse button -->
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#basicExampleNav"
+            aria-controls="basicExampleNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="basicExampleNav">
+
+        <!-- Links -->
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item {% if page == 'active_votes' %}active{% endif %}">
+                <a class="nav-link" href="{% url 'active_votes' %}">Актуальные
+                    <span class="sr-only">(current)</span>
+                </a>
+            </li>
+            <li class="nav-item {% if page == 'finished_votes' %}active{% endif %}">
+                <a class="nav-link" href="{% url 'finished_votes' %}">Прошедшие</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'create_vote' %}">Начать голосование</a>
+            </li>
+        </ul>
+
+
+        <form class="form-inline">
+            <div class="md-form my-0">
+                <input class="form-control mr-sm-2" type="text" placeholder="Поиск" aria-label="Search">
+            </div>
+        </form>
+    </div>
+    <!-- Collapsible content -->
+
+</nav>
+<!--/.Navbar-->
+

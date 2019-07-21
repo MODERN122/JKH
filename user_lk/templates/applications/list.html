@@ -1,8 +1,27 @@
 {% extends 'base.html' %}
+{% block nav %}
+    {% include 'nav.html' with page='applications' %}
+{% endblock %}
 {% block contend %}
-{% include 'link_bar.html' with page='applications' %}
-    <a href="{% url 'create_application' %}"><button>Создать заявку</button></a> <br>
-{% for application in applications %}
-    <a href="{{ application.get_absolute_url }}">{{ application }}</a> - статус: {{ application.status.name }}<br>
-{% endfor %}
+    <a href="{% url 'create_application' %}">
+        <button class="btn btn-primary">Создать заявку</button>
+    </a> <br>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">Заявка</th>
+            <th scope="col">Дата создания</th>
+            <th scope="col">Статус</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for application in applications %}
+            <tr>
+                <td><a href="{{ application.get_absolute_url }}">{{ application.body|slice:'0:60' }}</a></td>
+                <td>{{ application.date }}</td>
+                <td>{{ application.status.name }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}
