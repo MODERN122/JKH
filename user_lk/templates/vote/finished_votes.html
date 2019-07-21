@@ -1,8 +1,27 @@
-{% extends 'base.html'%}
+{% extends 'base.html' %}
+{% block nav %}
+    {% include 'nav.html' with page='votes' %}
+{% endblock %}
 {% block contend %}
-    {% include 'link_bar.html' with page='vote_list' %}
     {% include 'vote/link_bar.html' with page='finished_votes' %}
-{% for vote in votes %}
-    <a href="{{ vote.get_absolute_url }}">{{ vote.title }}</a> <br>
-{% endfor %}
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">Голосование</th>
+            <th scope="col">Дата окончания</th>
+            <th scope="col">Согласны</th>
+            <th scope="col">Несогласны</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for vote in votes %}
+            <tr>
+                <td><a href="{{ vote.get_absolute_url }}">{{ vote.title }}</a></td>
+                <td>{{ vote.end_date }}</td>
+                <td>{{ vote.agree.count }}</td>
+                <td>{{ vote.disagree.count }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}

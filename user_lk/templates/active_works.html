@@ -1,10 +1,30 @@
 {% extends 'base.html' %}
+{% block nav %}
+    {% include 'nav.html' with page='active_works' %}
+{% endblock %}
 {% block contend %}
-{% include 'link_bar.html' with page='active_works' %}
-{% for active_work in active_works %}
-    {{ active_work.description|linebreaks }}
-    c {{ active_work.start_date }} <br>
-    по {{ active_work.end_date }}
-    <hr>
-{% endfor %}
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">Вид работ</th>
+            <th scope="col">Дата начала</th>
+            <th scope="col">Дата окончания</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for active_work in active_works %}
+            <tr>
+                <td>{{ active_work.description|linebreaks }}</td>
+                <td>{{ active_work.start_date }}</td>
+                <td>{{ active_work.end_date }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{#{% for active_work in active_works %}#}
+{#    {{ active_work.description|linebreaks }}#}
+{#    c {{ active_work.start_date }} <br>#}
+{#    по {{ active_work.end_date }}#}
+{#    <hr>#}
+{#{% endfor %}#}
 {% endblock %}

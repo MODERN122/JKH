@@ -1,0 +1,8 @@
+{% extends 'base.html'%}
+{% block contend %}
+    {% include 'link_bar.html' with page='vote_list' %}
+    {% include 'lk_uk/vote/link_bar.html' with page='finished_votes' %}
+{% for vote in votes %}
+    <a href="{{ vote.get_absolute_url }}">{{ vote.title }}</a> <br>
+{% endfor %}
+{% endblock %}

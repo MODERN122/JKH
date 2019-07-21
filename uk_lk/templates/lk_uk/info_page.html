@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block nav %}
+    {% include 'nav.html' with page='info_page' %}
+{% endblock %}
+{% block contend %}
+    <style>
+    input {
+        border: 0;
+        border-bottom: 1px solid black;
+    }
+    </style>
+    <form method="post" class="border border-light p-5">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button>Сохранить</button>
+    </form>
+{% endblock %}

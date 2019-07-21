@@ -1,0 +1,11 @@
+<table>
+    <tr>
+        <td {% if page == 'info_page' %}style="background-color: lightblue;"{% endif %}><a href="{% url 'uk_info_page' %}">Управляющая компания</a></td>
+        <td {% if page == 'applications' %}style="background-color: lightblue;"{% endif %}><a href="{% url 'applications' %}">Заявки</a></td>
+        <td {% if page == 'vote_list' %}style="background-color: lightblue;"{% endif %}><a href="{% url 'votes' %}">Голосования</a></td>
+        <td {% if page == 'active_works' %}style="background-color: lightblue;"{% endif %}><a href="{% url 'uk_active_works' %}">Текущие работы</a></td>
+        <td {% if page == 'user_list' %}style="background-color: lightblue;"{% endif %}><a href="{% url 'user_list' %}">Пользователи</a></td>
+        <td {% if page == 'territories' %}style="background-color: lightblue;"{% endif %}><a href="{% url 'territories' %}">Список ЖЭК</a></td>
+    </tr>
+</table>
+<hr>

@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block contend %}
+{% include 'lk_uk/link_bar.html' with page='teritories' %}
+    <h3>{{ parent }}</h3>
+    {% for obj in objs %}
+        <a href="{{ obj.get_absolute_url }}">{{ obj }}</a><br>
+    {% endfor %}
+    <hr>
+    <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button>Добавить</button>
+    </form>
+{% endblock %}

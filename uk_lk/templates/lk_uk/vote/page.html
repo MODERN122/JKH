@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block contend %}
+{{ vote.title }}<br>
+{{ vote.context }}<br>
+{{ vote.date }}<br>
+{{ vote.duration }}<br>
+{{ vote.user.fullname }}<br>
+<form method="post">{% csrf_token %}
+    <button name="vote" value="agree" {% if user_vote == 'agree' %}disabled{% endif %}>Согласен</button>
+    <button name="vote" value="disagree" {% if user_vote == 'disagree' %}disabled{% endif %}>Несогласен</button>
+</form>
+{% if user.mc_manager %}
+    <form method="post">{% csrf_token %}
+    <button name="action" value="remove">Удалить</button>
+    <button name="action" value="publish" {% if vote.is_moderated %}disabled{% endif %}>Опубликовать</button>
+</form>
+{% endif %}
+<form method="post">{% csrf_token %}
+    {{ comment_form.as_p }}
+    <input type="submit">
+</form>
+{% for comment in vote.comments.all %}
+    {{ comment.context }}/{{ comment.date }}<br>
+{% endfor %}
+{% endblock %}

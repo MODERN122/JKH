@@ -1,0 +1,8 @@
+<table>
+    <tr>
+        <td {% if page == 'active_votes' %}style="background-color: lightblue;"{% endif %}><a href="{% url 'votes' %}">Активные голосования</a></td>
+        <td {% if page == 'finished_votes' %}style="background-color: lightblue;"{% endif %}><a href="{% url 'uk_finished_votes' %}">Завершенные голосования</a></td>
+        <td><a href="{% url 'create_vote' %}"><button>Начать голосование</button></a> </td>
+    </tr>
+</table>
+<hr>

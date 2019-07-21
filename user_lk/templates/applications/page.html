@@ -1,10 +1,18 @@
 {% extends 'base.html' %}
 {% block contend %}
-    {% include 'link_bar.html' %}
-    {{ application.body }}<br>
-    {{ application.date }}<br>
-    <img src="{% if application.image1 %}{{ application.image1.url }}{% endif %}" width="400"><br>
-    {{ application.status.name }}<br>
+    <div class="h5">{{ application.body|linebreaks }}</div>
+    <p>{{ application.date }}</p>
+    <div style="width: 340px; height: 200px" id="mapContainer"></div>
+    <div>
+        <img src="{% if application.image1 %}{{ application.image1.url }}{% endif %}" class="img-thumbnail"
+             style="width: 400px">
+        <img src="{% if application.image2 %}{{ application.image2.url }}{% endif %}" class="img-thumbnail"
+             style="width: 400px">
+        <img src="{% if application.image3 %}{{ application.image3.url }}{% endif %}" class="img-thumbnail"
+             style="width: 400px">
+    </div>
+    <button type="button" class="btn btn-info">{{ application.status.name }}</button>
+
     <br>
     <hr>
     <form method="post">{% csrf_token %}
@@ -14,8 +22,147 @@
     <hr>
     <h3>Комментарии:</h3>
     {% for comment in application.comments.all %}
-        <div {% if comment.user.mc_manager %}style="background-color: lightblue;"{% endif %}>{{ comment.context|linebreaks }}</div><br>
-        {{ comment.user.fullname }} / {{ comment.date }}<br><hr>
+        <div class="card" style="margin-bottom: 20px; {% if comment.user.mc_manager %}background-color: lightblue;{% endif %}">
+            <div class="card-body">
+                <p class="card-text">{{ comment.context|linebreaks }}</p>
+                <a class="card-link">{{ comment.user.fullname }}</a>
+                <a class="card-link">{{ comment.date }}</a>
+            </div>
+        </div>
     {% endfor %}
+
+    
+
+<script>
+
+var lat
+var long
+//js.api.here.com/v3/3.1/mapsjs
+{% comment %} if (navigator.geolocation) {
+		// Передаем две функции
+		navigator.geolocation.getCurrentPosition(
+		            geolocationSuccess, geolocationFailure);	
+	}
+
+function geolocationSuccess(position) {
+	lat = position.coords.latitude ;
+  long = position.coords.longitude;
+}
+
+function geolocationFailure(positionError) {
+	;
+} {% endcomment %}
+    // Initialize the platform object:
+    var platform = new H.service.Platform({
+    'apikey': 'ktmHvoManPA5amrtP3EzdM6rpP-ixTQERrRAStxgZYs'
+    });
+
+    // Obtain the default map types from the platform object
+    var maptypes = platform.createDefaultLayers();
+
+    // Instantiate (and display) a map object:
+    var map = new H.Map(
+    document.getElementById('mapContainer'),
+    maptypes.vector.normal.map,
+    {
+      zoom: 12,
+      center: { lng: 61.4291 , lat: 55.154 },
+      pixelRatio: window.devicePixelRatio || 1
+    });
+
+    // Enable the event system on the map instance:
+var mapEvents = new H.mapevents.MapEvents(map);
+
+// Add event listener:
+window.addEventListener('resize', () => map.getViewPort().resize());
+
+map.addEventListener('tap', function(evt) {
+
+  // Log 'tap' and 'mouse' events:
+
+
+   var coord = map.screenToGeo(evt.currentPointer.viewportX,
+            evt.currentPointer.viewportY);
+        position = {
+    lat: coord.lat,
+    lng: coord.lng
+  };
+  var z = evt.target;
+  console.log(z);
+        if (z.$){
+  marker = new H.map.Marker(position);
+long1  = document.getElementById("long1");
+lat1 = document.getElementById("lat1");
+long1.value = coord.lng;
+lat1.value = coord.lat;
+
+console.log(long1);
+
+
+  marker.addEventListener('tap', function(evt){
+      console.log(evt);
+          evt.target.dispose();
+      });
+         map.addObject(marker); 
+      }
+      
+    console.log('Clicked at ' + Math.abs(coord.lat.toFixed(4)) +
+        ((coord.lat > 0) ? 'N' : 'S') +
+        ' ' + Math.abs(coord.lng.toFixed(4)) +
+         ((coord.lng > 0) ? 'E' : 'W'));
+  console.log(evt.type, evt.currentPointer.type);
+
+});
+
+// Instantiate the default behavior, providing the mapEvents object: 
+var behavior = new H.mapevents.Behavior(mapEvents);
+
+
+// Create the parameters for the geocoding request:
+var geocodingParams = {
+    searchText: 'Ворошилова 12, Челябинск'
+  };
+
+// Define a callback function to process the geocoding response:
+var onResult = function(result) {
+  var locations = result.Response.View[0].Result,
+    position,
+    marker;
+  // Add a marker for each location found
+  for (i = 0;  i < locations.length; i++) {
+  position = {
+    lat: {{ application.lat }},
+    lng: {{ application.long }}
+  };
+  marker = new H.map.Marker(position);
+  map.addObject(marker);
+  }
+};
+
+// Get an instance of the geocoding service:
+var geocoder = platform.getGeocodingService();
+
+// Call the geocode method with the geocoding parameters,
+// the callback and an error callback function (called if a
+// communication error occurs):
+geocoder.geocode(geocodingParams, onResult, function(e) {
+  alert(e);
+});
+
+
+
+function setUpClickListener(map) {
+  // Attach an event listener to map display
+  // obtain the coordinates and display in an alert box.
+  map.addEventListener('tap', function (evt) {
+    var coord = map.screenToGeo(evt.currentPointer.viewportX,
+            evt.currentPointer.viewportY);
+    logEvent('Clicked at ' + Math.abs(coord.lat.toFixed(4)) +
+        ((coord.lat > 0) ? 'N' : 'S') +
+        ' ' + Math.abs(coord.lng.toFixed(4)) +
+         ((coord.lng > 0) ? 'E' : 'W'));
+  });
+}
+  </script>
 
 {% endblock %}

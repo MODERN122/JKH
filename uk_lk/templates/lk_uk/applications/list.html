@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block nav %}
+    {% include 'nav.html' with page='applications' %}
+{% endblock %}
+{% block contend %}
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">Заявка</th>
+            <th scope="col">ФИО</th>
+            <th scope="col">Статус</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for application in applications %}
+            <tr>
+                <td><a href="{{ application.get_absolute_url }}">{{ application.body|slice:'0:60' }}</a></td>
+                <td>{{ application.user.fullname }}</td>
+                <td>{{ application.status.name }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

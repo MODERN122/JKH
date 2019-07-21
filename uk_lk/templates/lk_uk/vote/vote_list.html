@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block contend %}
+    {% include 'lk_uk/link_bar.html' with page='vote_list' %}
+    {% include 'lk_uk/vote/link_bar.html' with page='active_votes' %}
+
+{% if moderate_list %}
+    <h1>Требуют модерации:</h1>
+    {% for vote in moderate_list %}
+        <a href="{{ vote.get_absolute_url }}">{{ vote.title }}</a> <br>
+    {% endfor %}
+    <hr>
+{% endif %}
+{% for vote in votes %}
+    <a href="{{ vote.get_absolute_url }}">{{ vote.title }}</a> <br>
+{% endfor %}
+{% endblock %}

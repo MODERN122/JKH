@@ -1,6 +1,6 @@
 from django import forms
 
-from main.models import User, ActiveWork
+from main.models import User, ActiveWork, ManagementCompany
 
 
 class UserForm(forms.ModelForm):
@@ -25,4 +25,12 @@ class ActiveWorkForm(forms.ModelForm):
             'description',
             'start_date',
             'end_date',
+        ]
+
+
+class ManagementCompanyForm(forms.ModelForm):
+    class Meta:
+        model = ManagementCompany
+        exclude = [
+            'pk',
         ]
