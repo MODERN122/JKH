@@ -14,5 +14,6 @@ urlpatterns = [
     path('uk_lk/', include('uk_lk.urls')),
     path('login/', login_page, name='login_page'),
     path('logout/', logout_page, name='logout_page'),
+    path('in_developing/', TemplateView.as_view(template_name='in_developing.html')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
