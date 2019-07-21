@@ -131,8 +131,8 @@ var onResult = function(result) {
   // Add a marker for each location found
   for (i = 0;  i < locations.length; i++) {
   position = {
-    lat: locations[i].Location.DisplayPosition.Latitude,
-    lng: locations[i].Location.DisplayPosition.Longitude
+    lat: {{ application.lat }},
+    lng: {{ application.long }}
   };
   marker = new H.map.Marker(position);
   map.addObject(marker);

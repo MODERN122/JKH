@@ -73,7 +73,7 @@ def create_vote(request):
             instance = form.save(commit=False)
             instance.user = request.user
             instance.save()
-            return redirect(instance)
+            return redirect('user_vote_page', pk=instance.pk)
     else:
         form = VoteForm()
 

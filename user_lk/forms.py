@@ -11,7 +11,13 @@ class ApplicationForm(forms.ModelForm):
             'image1',
             'image2',
             'image3',
+            'long',
+            'lat',
         ]
+        widgets = {
+            'long': forms.HiddenInput(),
+            'lat': forms.HiddenInput(),
+        }
 
 
 class ApplicationCommentForm(forms.ModelForm):

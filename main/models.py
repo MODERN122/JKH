@@ -99,6 +99,8 @@ class Application(models.Model):
     image1 = models.ImageField(upload_to='applications', blank=True)
     image2 = models.ImageField(upload_to='applications', blank=True)
     image3 = models.ImageField(upload_to='applications', blank=True)
+    long = models.CharField(max_length=200, blank=True)
+    lat = models.CharField(max_length=200, blank=True)
 
     def get_absolute_url(self):
         return reverse('application_page', kwargs={'pk': self.pk})
